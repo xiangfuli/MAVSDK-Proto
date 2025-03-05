@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package mavsdk.rpc.hil_gps;
+
+import "mavsdk_options.proto";
+
+service HilGpsService {
+    // Send HIL GPS information
+    rpc SetHilGps(SetHilGpsRequest) returns(SetHilGpsResponse) { option (mavsdk.options.async_type) = SYNC; }
+}
+
+message SetHilGpsRequest {
+    HilGpsInfo hil_gps_info = 1; // The gps info payload
+}
+
+message SetHilGpsResponse {
+    HilGpsResult hil_gps_result = 1;
+}
+
+message HilGpsInfo {
+    uint64 time_usec = 1;
+    double lat       = 2;
+    double lon       = 3;
+    double alt       = 4;
+    double vel       = 5;
+    double yaw       = 6;
+    double eph       = 7;
+    double epv       = 8;
+    uint32 id        = 9;
+}
+
+
+// Result type.
+message HilGpsResult {
+    // Possible results returned for mocap requests
+    enum Result {
+        RESULT_UNKNOWN = 0; // Unknown error
+        RESULT_SUCCESS = 1; // Request succeeded
+        RESULT_NO_SYSTEM = 2; // No system is connected
+        RESULT_CONNECTION_ERROR = 3; // Connection error
+        RESULT_INVALID_REQUEST_DATA = 4; // Invalid request data
+        RESULT_UNSUPPORTED = 5; // Function unsupported
+    }
+
+    Result result = 1; // Result enum value
+    string result_str = 2; // Human-readable English string describing the result
+}
